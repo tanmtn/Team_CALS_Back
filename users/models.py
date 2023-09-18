@@ -4,15 +4,28 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     class GenderChoices(models.TextChoices):
-        MALE = ("male", "Male")
-        FEMALE = ("female", "Female")
+        MALE = ("male", "남")
+        FEMALE = ("female", "여")
+
+    class ActivityLevelChoices(models.TextChoices):
+        LOWEST = ("lowest", "비활동적")
+        LOW = ("low", "저활동적")
+        MIDDLE = ("middle", "활동적")
+        HIGH = ("high", "매우 활동적")
 
     first_name = models.CharField(max_length=150, editable=False)
     last_name = models.CharField(max_length=150, editable=False)
-    ID = models.CharField(max_length=30, unique=True)
-    password = 
+
     gender = models.CharField(
-        max_length=10,
+        max_length=30,
         choices=GenderChoices.choices,
     )
-    email = models.EmailField(max_length=100)
+
+    age = models.PositiveIntegerField()
+    height = models.PositiveIntegerField()
+    weight = models.PositiveIntegerField()
+    activity = models.CharField(
+        max_length=30,
+        choices=ActivityLevelChoices.choices,
+        default="lowest",
+    )
