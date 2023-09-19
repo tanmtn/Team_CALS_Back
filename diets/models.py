@@ -21,6 +21,7 @@ class Diet(CommonModel):
     food_name = models.CharField(max_length=200)  # 음식명
     food_calorie = models.PositiveIntegerField()  # 음식당 칼로리
     meal_calorie = models.PositiveIntegerField()  # 식사당 총 칼로리
+    daily_review = models.TextField(null=True,blank=True,)
 
 
     def daily_total_calorie(cls,created_date):

@@ -12,6 +12,7 @@ class DietAdmin(admin.ModelAdmin):
         "food_calorie",
         "meal_calorie",
         "daily_total_calorie",
+        "daily_review",
     )
 
     list_filter = (

@@ -23,3 +23,9 @@ class DietSerializer(ModelSerializer):
         calorie_difference = total_calorie - recommended_calorie
         rating = 5.0 - floor(calorie_difference / 100) * 0.5
         return max(0.0, rating)
+
+
+class DietReviewSerializer(ModelSerializer):
+    class Meta:
+        model = Diet
+        fields = ("daily_review","created_date", "created_time", "updated_at",)
