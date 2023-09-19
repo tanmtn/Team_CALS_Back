@@ -38,7 +38,8 @@ CUSTOM_APPS = [
 THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
-    "rest_framework_simplejwt.token_blacklist",
+    "rest_framework_simplejwt",
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 SYSTEM_APPS = [
@@ -139,8 +140,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"
 
 
-from datetime import timedelta
-
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 # CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000' ,'http://localhost:3000']
@@ -151,9 +150,14 @@ REST_FRAMEWORK = {
     ],
 }
 
+from datetime import timedelta
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
