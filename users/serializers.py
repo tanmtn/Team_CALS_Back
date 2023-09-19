@@ -4,6 +4,7 @@ from .models import User
 
 class UserSerializer(ModelSerializer):
     recommended_calorie = SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
@@ -38,14 +39,11 @@ class UserSerializer(ModelSerializer):
         }
 
         if gender == "male":
-            recommended_calorie = (
-                activity_coefficients.get(activity, 1.0)
-                * ((6.25 * height) + (10 * weight) - (5 * age) + 5)
+            recommended_calorie = activity_coefficients.get(activity, 1.0) * (
+                (6.25 * height) + (10 * weight) - (5 * age) + 5
             )
         else:
-            recommended_calorie = (
-                activity_coefficients.get(f"female_{activity}", 1.0)
-                * ((6.25 * height) + (10 * weight) - (5 * age) -161)
-            )
+            recommended_calorie = activity_coefficients.get(
+                f"female_{activity}", 1.0
+            ) * ((6.25 * height) + (10 * weight) - (5 * age) - 161)
         return recommended_calorie
-

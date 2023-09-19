@@ -1,8 +1,7 @@
-from django.contrib.auth import authenticate, login, logout
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import ParseError
+
+# from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
@@ -14,11 +13,12 @@ from .models import User
 
 
 class Signup(APIView):
-    
     # 회원 정보 조회
     def get(self, request):
         user = User.objects.get(id=request.user.id)
-        return Response(serializers.UserSerializer(user).data, status=status.HTTP_200_OK)
+        return Response(
+            serializers.UserSerializer(user).data, status=status.HTTP_200_OK
+        )
 
     def post(self, request):
         user = serializers.UserSerializer(data=request.data)
@@ -26,7 +26,7 @@ class Signup(APIView):
         # id 중복 검사
         if User.objects.filter(username=request.data["username"]).exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         # 회원가입
         if user.is_valid():
             user_data = user.validated_data
@@ -47,13 +47,12 @@ class Signup(APIView):
         return Response(
             {
                 "user": serializers.UserSerializer(user).data,
-                "recommended_calorie": recommended_calorie, 
+                "recommended_calorie": recommended_calorie,
                 "access": access_token,
                 "refresh": refresh_token,
             },
             status=status.HTTP_201_CREATED,
         )
-
 
     # 회원 정보 수정(비밀번호, 키, 몸무게, 활동량)
     def put(self, request):
@@ -67,7 +66,7 @@ class Signup(APIView):
             serializer = serializers.UserSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # 로그아웃
