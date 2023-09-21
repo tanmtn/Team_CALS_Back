@@ -7,6 +7,7 @@ from . import views
 
 
 urlpatterns = [
+    path("<int:pk>", views.UserInfo.as_view()),
     path("signup", views.Signup.as_view()),
     path("logout", views.Logout.as_view()),
     path("login/token", TokenObtainPairView.as_view(), name="token_obtain_pair"),

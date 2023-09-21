@@ -15,7 +15,7 @@ class User(AbstractUser):
 
     first_name = models.CharField(max_length=150, editable=False)
     last_name = models.CharField(max_length=150, editable=False)
-    email = models.CharField(max_length=100, unique=True)
+    email = models.CharField(max_length=100)
     gender = models.CharField(
         max_length=30,
         choices=GenderChoices.choices,
