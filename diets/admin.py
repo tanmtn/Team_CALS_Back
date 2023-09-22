@@ -1,12 +1,13 @@
 from django.contrib import admin
-from .models import Diet
+from .models import DietList
 
 
-@admin.register(Diet)
+@admin.register(DietList)
 class DietAdmin(admin.ModelAdmin):
     list_display = (
         "created_date",
         "created_time",
+        "user",
         "meal_category",
         "food_name",
         "food_calorie",

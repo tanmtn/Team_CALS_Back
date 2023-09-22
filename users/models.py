@@ -15,17 +15,18 @@ class User(AbstractUser):
 
     first_name = models.CharField(max_length=150, editable=False)
     last_name = models.CharField(max_length=150, editable=False)
-    email = models.CharField(max_length=100)
+    email = models.CharField(max_length=200)
     gender = models.CharField(
         max_length=30,
         choices=GenderChoices.choices,
     )
 
-    age = models.PositiveIntegerField()
-    height = models.PositiveIntegerField()
-    weight = models.PositiveIntegerField()
+    age = models.PositiveIntegerField(null=True)
+    height = models.PositiveIntegerField(null=True)
+    weight = models.PositiveIntegerField(null=True)
     activity = models.CharField(
+        null=True,
         max_length=30,
         choices=ActivityLevelChoices.choices,
-        default="lowest",
+        default=ActivityLevelChoices.LOWEST,
     )

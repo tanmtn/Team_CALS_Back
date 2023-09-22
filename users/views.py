@@ -26,7 +26,7 @@ class UserInfo(APIView):
         user = self.get_objects(pk)
         serializer = serializers.UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     # 회원 정보 수정(비밀번호, 키, 몸무게, 활동량)
     def put(self, request, pk):
         user = self.get_objects(pk)
@@ -54,7 +54,7 @@ class Signup(APIView):
         # 회원가입
         if serializer.is_valid():
             user = serializer.save()
-            recommended_calorie = serializer.get_recommended_calorie(user)
+            # recommended_calorie = serializer.get_recommended_calorie(user)
             token = TokenObtainPairSerializer.get_token(user)
             refresh_token = str(token)
             access_token = str(token.access_token)
@@ -69,7 +69,6 @@ class Signup(APIView):
         else:
             print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 # 로그아웃

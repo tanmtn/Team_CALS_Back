@@ -2,5 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("<int:pk>", views.Diet.as_view()),
+    path("", views.DietView.as_view()),
+    path("<int:pk>", views.PutDiet.as_view()),
 ]

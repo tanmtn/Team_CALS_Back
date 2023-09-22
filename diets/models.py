@@ -3,11 +3,11 @@ from common.models import CommonModel
 from django.db.models import Sum
 
 
-class Diet(CommonModel):
+class DietList(CommonModel):
     """식단 모델"""
 
     class MealCategoryChoices(models.TextChoices):
-        BREAKFAST = ("breackfast", "아침")
+        BREAKFAST = ("breakfast", "아침")
         LUNCH = ("lunch", "점심")
         DINNER = ("dinner", "저녁")
         SNACK = ("snack", "간식")
@@ -21,11 +21,29 @@ class Diet(CommonModel):
     food_name = models.CharField(max_length=200)  # 음식명
     food_calorie = models.PositiveIntegerField()  # 음식당 칼로리
     meal_calorie = models.PositiveIntegerField()  # 식사당 총 칼로리
-    daily_review = models.TextField(null=True,blank=True,)
+    daily_review = models.TextField(
+        null=True,
+        blank=True,
+    )
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="diets",
+    )
 
-
-    def daily_total_calorie(cls,created_date):
-        total_rating = cls.objects.filter(created_date=created_date).aggregate(Sum('meal_calorie'))['meal_calorie__sum']
+    def daily_total_calorie(self, created_date):
+        total_rating = self.objects.filter(created_date=created_date).aggregate(
+            Sum("meal_calorie")
+        )["meal_calorie__sum"]
         if total_rating is None:
             total_rating = 0
         return total_rating
+
+{
+"meal_category":"breakfast",
+"food_name":"간계밥",
+"food_calorie":"400",
+"meal_calorie":"500",
+"daily_review":"",
+"user":"1"
+}
