@@ -1,6 +1,23 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from .models import User
+from math import floor
+from django.contrib.auth import get_user_model
 
+from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as JwtTokenObtainPairSerializer
+
+
+class TokenObtainPairSerializer(JwtTokenObtainPairSerializer):
+    username_field = get_user_model().USERNAME_FIELD
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = (
+            'email',
+            'password',
+        )
 
 class RecommendedCalorieMixin:
     def get_recommended_calorie(self, user):
@@ -22,13 +39,13 @@ class RecommendedCalorieMixin:
         }
 
         if gender == "male":
-            recommended_calorie = activity_coefficients.get(activity, 1.0) * (
+            recommended_calorie = floor(activity_coefficients.get(activity, 1.0) * (
                 (6.25 * height) + (10 * weight) - (5 * age) + 5
-            )
+            ))
         elif gender == "female":
-            recommended_calorie = activity_coefficients.get(
+            recommended_calorie = floor(activity_coefficients.get(
                 f"female_{activity}", 1.0
-            ) * ((6.25 * height) + (10 * weight) - (5 * age) - 161)
+            ) * ((6.25 * height) + (10 * weight) - (5 * age) - 161))
         return recommended_calorie
 
 

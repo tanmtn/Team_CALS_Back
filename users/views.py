@@ -1,5 +1,7 @@
+from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import permissions
 
 # from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +9,7 @@ from rest_framework import status
 from rest_framework.exceptions import NotFound
 
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from . import serializers
@@ -14,7 +17,7 @@ from .models import User
 
 
 class UserInfo(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_objects(self, pk):
         try:
@@ -30,14 +33,14 @@ class UserInfo(APIView):
     # 회원 정보 수정(비밀번호, 키, 몸무게, 활동량)
     def put(self, request, pk):
         user = self.get_objects(pk)
-        serializer = serializers.UserSerializer(
+        serializer = serializers.UserPutSerializer(
             user,
             data=request.data,
             partial=True,
         )
         if serializer.is_valid():
             user = serializer.save()
-            updated_serializer = serializers.UserSerializer(user)
+            updated_serializer = serializers.UserPutSerializer(user)
             return Response(updated_serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -66,6 +69,11 @@ class Signup(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 로그인
+class EmailTokenObtainPairView(TokenObtainPairView):
+    serializer_class = TokenObtainPairSerializer
+
+
 # 로그아웃
 class Logout(APIView):
     permission_classes = [IsAuthenticated]
@@ -78,6 +86,9 @@ class Logout(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 # 회원 탈퇴

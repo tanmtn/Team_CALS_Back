@@ -26,8 +26,10 @@ class User(AbstractUser):
     height = models.PositiveIntegerField()
     weight = models.PositiveIntegerField()
     activity = models.CharField(
-        required = True,
         max_length=30,
         choices=ActivityLevelChoices.choices,
         default=ActivityLevelChoices.LOWEST,
     )
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
