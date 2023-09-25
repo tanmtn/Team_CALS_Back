@@ -1,6 +1,6 @@
 from django.db import models
 from common.models import CommonModel
-from django.db.models import Sum
+
 
 
 class DietList(CommonModel):
@@ -18,8 +18,7 @@ class DietList(CommonModel):
         max_length=30,
         choices=MealCategoryChoices.choices,
     )  # 식사 종류(아/점/저/간/야/음)
-    food_name = models.CharField(max_length=200)  # 음식명
-    food_calorie = models.PositiveIntegerField()  # 음식당 칼로리
+
     meal_calorie = models.PositiveIntegerField()  # 식사당 총 칼로리
     daily_review = models.TextField(
         null=True,
@@ -31,10 +30,10 @@ class DietList(CommonModel):
         related_name="diets",
     )
 
-    def daily_total_calorie(self, created_date):
-        total_rating = self.objects.filter(created_date=created_date).aggregate(
-            Sum("meal_calorie")
-        )["meal_calorie__sum"]
-        if total_rating is None:
-            total_rating = 0
-        return total_rating
+
+class SelectedDiet(CommonModel):
+    food_name = models.CharField(max_length=250)
+    food_calorie = models.PositiveIntegerField()
+
+    def __str__(self) -> str:
+        return self.name

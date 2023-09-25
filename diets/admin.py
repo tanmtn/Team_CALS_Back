@@ -9,10 +9,7 @@ class DietAdmin(admin.ModelAdmin):
         "created_time",
         "user",
         "meal_category",
-        "food_name",
-        "food_calorie",
         "meal_calorie",
-        "daily_total_calorie",
         "daily_review",
     )
 

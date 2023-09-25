@@ -34,7 +34,6 @@ CUSTOM_APPS = [
     "common.apps.CommonConfig",
     "users.apps.UsersConfig",
     "diets.apps.DietsConfig",
-    "dietinfo.apps.DietinfoConfig",
 ]
 
 THIRD_PARTY_APPS = [

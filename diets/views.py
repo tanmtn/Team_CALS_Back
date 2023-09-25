@@ -23,9 +23,7 @@ class DietView(APIView):
             # user_data = serializer.validated_data
             # daily_calorie_rating = serializer.get_daily_rating(user_data)
             return Response(
-                {
-                    "diet": serializer.data
-                },
+                {"diet": serializer.data},
                 status=status.HTTP_201_CREATED,
             )
         else:
