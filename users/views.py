@@ -47,10 +47,6 @@ class Signup(APIView):
     def post(self, request):
         serializer = serializers.UserSerializer(data=request.data)
 
-        # id 중복 검사
-        if User.objects.filter(username=request.data["username"]).exists():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
         # 회원가입
         if serializer.is_valid():
             user = serializer.save()
@@ -67,7 +63,6 @@ class Signup(APIView):
                 status=status.HTTP_201_CREATED,
             )
         else:
-            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -38,12 +38,3 @@ class DietList(CommonModel):
         if total_rating is None:
             total_rating = 0
         return total_rating
-
-{
-"meal_category":"breakfast",
-"food_name":"간계밥",
-"food_calorie":"400",
-"meal_calorie":"500",
-"daily_review":"",
-"user":"1"
-}
