@@ -15,20 +15,14 @@ from . import serializers
 class UserInfo(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_objects(self, pk):
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise NotFound
-
-    def get(self, request, pk):
-        user = self.get_objects(pk)
+    def get(self, request):
+        user = request.user
         serializer = serializers.UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     # 회원 정보 수정(비밀번호, 키, 몸무게, 활동량)
-    def put(self, request, pk):
-        user = self.get_objects(pk)
+    def put(self, request):
+        user = request.user
         serializer = serializers.UserPutSerializer(
             user,
             data=request.data,
@@ -75,7 +69,7 @@ class Signup(APIView):
 
 
 # 로그인
-class EmailTokenObtainPairView(TokenObtainPairView):
+class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
 

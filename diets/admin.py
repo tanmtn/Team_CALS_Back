@@ -3,7 +3,7 @@ from .models import DietList, SelectedDiet
 
 
 @admin.register(DietList)
-class DietAdmin(admin.ModelAdmin):
+class DietListAdmin(admin.ModelAdmin):
     list_display = (
         "created_date",
         "created_time",

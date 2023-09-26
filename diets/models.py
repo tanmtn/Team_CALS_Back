@@ -18,7 +18,7 @@ class DietList(CommonModel):
         max_length=30,
         choices=MealCategoryChoices.choices,
     )
-
+    selected_diet = models.ManyToManyField("diets.SelectedDiet")
     meal_calorie = models.PositiveIntegerField()  # 식사당 총 칼로리
     daily_review = models.TextField(
         null=True,
