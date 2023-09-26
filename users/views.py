@@ -42,21 +42,29 @@ class UserInfo(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class Signup(APIView):
     def post(self, request):
         serializer = serializers.UserSerializer(data=request.data)
 
         # 회원가입
         if serializer.is_valid():
-            user = serializer.save()
+            user = User.objects.create_user(
+                username = request.data["username"],
+                password = request.data["password"],
+                email = request.data["email"],
+                age = request.data["age"],
+                gender = request.data["gender"],
+                height = request.data["height"],
+                weight = request.data["weight"],
+                activity = request.data["activity"],
+            )
             # recommended_calorie = serializer.get_recommended_calorie(user)
             token = TokenObtainPairSerializer.get_token(user)
             refresh_token = str(token)
             access_token = str(token.access_token)
             return Response(
                 {
-                    "user": serializer.data,
+                    "user": serializers.UserSerializer(user).data,
                     "access": access_token,
                     "refresh": refresh_token,
                 },

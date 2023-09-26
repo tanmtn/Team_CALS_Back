@@ -15,15 +15,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = (
-            'email',
-            'password',
+            "email",
+            "password",
         )
+
 
 class RecommendedCalorieMixin:
     def get_recommended_calorie(self, user):
-        age = user.age
-        height = user.height
-        weight = user.weight
+        age = int(user.age)
+        height = int(user.height)
+        weight = int(user.weight)
         gender = user.gender
         activity = user.activity
 
@@ -39,13 +40,15 @@ class RecommendedCalorieMixin:
         }
 
         if gender == "male":
-            recommended_calorie = floor(activity_coefficients.get(activity, 1.0) * (
-                (6.25 * height) + (10 * weight) - (5 * age) + 5
-            ))
+            recommended_calorie = floor(
+                activity_coefficients.get(activity, 1.0)
+                * ((6.25 * height) + (10 * weight) - (5 * age) + 5)
+            )
         elif gender == "female":
-            recommended_calorie = floor(activity_coefficients.get(
-                f"female_{activity}", 1.0
-            ) * ((6.25 * height) + (10 * weight) - (5 * age) - 161))
+            recommended_calorie = floor(
+                activity_coefficients.get(f"female_{activity}", 1.0)
+                * ((6.25 * height) + (10 * weight) - (5 * age) - 161)
+            )
         return recommended_calorie
 
 
