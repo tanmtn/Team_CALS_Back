@@ -7,11 +7,8 @@ from .models import DietList
 
 
 class DietView(APIView):
-    # authentication_classes = [IsAuthenticated]
-
     def get(self, request):
-        # user = request.user
-        diets = DietList.objects.all()
+        diets = DietList.objects.filter(user=request.user, created_date=request.created_date)
         serializer = serializers.DietSerializer(diets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -21,7 +18,7 @@ class DietView(APIView):
         if serializer.is_valid():
             diet = serializer.save()
             return Response(
-                {"diet": serializer.data},
+                {"diet": serializers.DietSerializer(diet).data},
                 status=status.HTTP_201_CREATED,
             )
         else:
@@ -53,3 +50,8 @@ class PutDiet(APIView):
             )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+    def delete(self, request, pk):
+        diets = DietList.objects.get(pk=pk)
+        diet.delete()
