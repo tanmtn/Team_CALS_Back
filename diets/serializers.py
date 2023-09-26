@@ -4,16 +4,9 @@ from math import floor
 from django.db.models import Sum
 
 
-class DietSerializer(ModelSerializer):
-    daily_rating = SerializerMethodField()
-
-    class Meta:
-        model = DietList
-        fields = "__all__"
-
-    def get_daily_rating(self, user):
-        created_date = user.created_date
-        daily_total_calorie = DietList.daily_total_calorie(created_date)
+class CalculationMixin:
+    def rating_calculation(self, user):
+        daily_total_calorie = DietList.objects.filter(created_date=user.created_date)
         meal_calorie = user.meal_calorie
         recommended_calorie = user.user.recommended_calorie
 
@@ -26,8 +19,24 @@ class DietSerializer(ModelSerializer):
         rating = 5.0 - floor(calorie_difference / 100) * 0.5
         return max(0.0, rating)
 
+    def daily_calorie_sum(self, created_date):
+        total_rating = self.objects.filter(created_date=created_date).aggregate(
+            Sum("meal_calorie")
+        )["meal_calorie__sum"]
+        if total_rating is None:
+            total_rating = 0
+        return total_rating
 
-class DietReviewSerializer(ModelSerializer):
+
+class DietSerializer(ModelSerializer, CalculationMixin):
+    daily_rating = SerializerMethodField()
+
+    class Meta:
+        model = DietList
+        fields = "__all__"
+
+
+class DietReviewSerializer(ModelSerializer, CalculationMixin):
     class Meta:
         model = DietList
         fields = (
@@ -38,15 +47,7 @@ class DietReviewSerializer(ModelSerializer):
         )
 
 
-class SelectedDietSerializer(ModelSerializer):
+class SelectedDietSerializer(ModelSerializer, CalculationMixin):
     class Meta:
         model = SelectedDiet
         fields = "__all__"
-
-        def daily_total_calorie(self, created_date):
-            total_rating = self.objects.filter(created_date=created_date).aggregate(
-                Sum("meal_calorie")
-            )["meal_calorie__sum"]
-            if total_rating is None:
-                total_rating = 0
-            return total_rating

@@ -1,19 +1,15 @@
-from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import permissions
-
-# from rest_framework.exceptions import ParseError
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from . import serializers
 from .models import User
+from . import serializers
 
 
 class UserInfo(APIView):
@@ -44,6 +40,7 @@ class UserInfo(APIView):
             return Response(updated_serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class Signup(APIView):
@@ -88,12 +85,9 @@ class Logout(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
 # 회원 탈퇴
 class Withdrawal(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
