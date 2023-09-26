@@ -18,7 +18,7 @@ class DietList(CommonModel):
         max_length=30,
         choices=MealCategoryChoices.choices,
     )
-    selected_diet = models.ManyToManyField("diets.SelectedDiet")
+    selected_diet = models.ManyToManyField("diets.SelectedDiet", related_name="diets",)
     meal_calorie = models.PositiveIntegerField()  # 식사당 총 칼로리
     daily_review = models.TextField(
         null=True,
@@ -30,10 +30,6 @@ class DietList(CommonModel):
         related_name="diets",
     )
 
-
 class SelectedDiet(CommonModel):
     food_name = models.CharField(max_length=250)
     food_calorie = models.PositiveIntegerField()
-
-    def __str__(self) -> str:
-        return self.name

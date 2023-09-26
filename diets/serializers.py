@@ -1,10 +1,19 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from math import floor
 from django.db.models import Sum
-from .models import DietList
+from .models import DietList, SelectedDiet
 from users.models import User
 from users.serializers import UserSerializer
 from . import serializers
+
+
+class SelectedDietSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SelectedDiet
+        fields = (
+            "food_name",
+            "food_calorie",
+        )
 
 
 # class CalculationMixin:

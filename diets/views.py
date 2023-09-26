@@ -1,14 +1,62 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from . import serializers
-from .models import DietList
+from .models import DietList, SelectedDiet
+
+class SelectedDietView(APIView):
+
+    def get(self, request):
+        all_selected_diet = SelectedDiet.objects.all()
+        serializer = serializers.SelectedDietSerializer(all_selected_diet, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = serializers.SelectedDietSerializer(data=request.data)
+        if serializer.is_valid():
+            selected_diet = serializer.save()
+            return Response(serializers.SelectedDietSerializer(selected_diet).data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SelectedDietDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return SelectedDiet.objects.get(pk=pk)
+        except SelectedDiet.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        selected_diet = self.get_object(pk)
+        serializer = serializers.SelectedDietSerializer(selected_diet)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, pk):
+        selected_diet = self.get_object(pk)
+        serializer = serializers.SelectedDietSerializer(
+            selected_diet,
+            data=request.data,
+            partial=True,
+        )  # 부분 수정 가능하도록 partial true
+        if serializer.is_valid():
+            updated_selected_diet = serializer.save()
+            return Response(serializers.SelectedDietSerializer(updated_selected_diet).data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        selected_diet = self.get_object(pk)
+        selected_diet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 class DietView(APIView):
     def get(self, request):
-        diets = DietList.objects.filter(user=request.user, created_date=request.created_date)
+        diets = DietList.objects.filter(user=request.user, created_date=request.data["created_date"])
         serializer = serializers.DietSerializer(diets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

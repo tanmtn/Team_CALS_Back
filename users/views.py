@@ -73,6 +73,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
 
+
 # 로그아웃
 class Logout(APIView):
     permission_classes = [IsAuthenticated]
