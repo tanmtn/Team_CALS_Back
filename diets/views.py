@@ -54,4 +54,5 @@ class PutDiet(APIView):
 
     def delete(self, request, pk):
         diets = DietList.objects.get(pk=pk)
-        diet.delete()
+        diets.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
