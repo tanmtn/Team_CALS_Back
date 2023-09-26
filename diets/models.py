@@ -23,7 +23,7 @@ class DietList(CommonModel):
     daily_review = models.TextField(
         null=True,
         blank=True,
-    )
+    )   # 한줄평
     user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
