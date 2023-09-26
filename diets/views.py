@@ -56,7 +56,8 @@ class SelectedDietDetail(APIView):
 
 class DietView(APIView):
     def get(self, request):
-        diets = DietList.objects.filter(user=request.user, created_date=request.data["created_date"])
+        created_date = request.query_params.get("created_date", "")
+        diets = DietList.objects.filter(user=request.user, created_date=created_date)
         serializer = serializers.DietSerializer(diets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
