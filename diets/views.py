@@ -6,8 +6,8 @@ from rest_framework import status
 from . import serializers
 from .models import DietList, SelectedDiet
 
-class SelectedDietView(APIView):
 
+class SelectedDietView(APIView):
     def get(self, request):
         all_selected_diet = SelectedDiet.objects.all()
         serializer = serializers.SelectedDietSerializer(all_selected_diet, many=True)

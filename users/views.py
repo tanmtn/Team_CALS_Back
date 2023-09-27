@@ -29,7 +29,13 @@ class UserInfo(APIView):
             partial=True,
         )
         if serializer.is_valid():
-            user = serializer.save()
+            user = User.objects.create_user(
+                username = request.data["username"],
+                password = request.data["password"],
+                height = request.data["height"],
+                weight = request.data["weight"],
+                activity = request.data["activity"],
+            )
             updated_serializer = serializers.UserPutSerializer(user)
             return Response(updated_serializer.data, status=status.HTTP_200_OK)
         else:
@@ -66,6 +72,21 @@ class Signup(APIView):
             )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UsernameDuplicate(APIView):
+    def post(self, request):
+        if User.objects.filter(username=request.data["username"]).exists():
+            return Response({"error":"이미 사용중인 닉네임입니다."}, status=status.HTTP_400_BAD_REQUEST)
+        else: Response(status=status.HTTP_200_OK)
+
+
+class EmailDuplicate(APIView):
+    def post(self, request):
+        if User.objects.filter(email=request.data["email"]).exists():
+            return Response({"error":"이미 존재하는 이메일입니다."}, status=status.HTTP_400_BAD_REQUEST)
+        else: Response(status=status.HTTP_200_OK)
+
 
 
 # 로그인
