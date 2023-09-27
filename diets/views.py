@@ -65,7 +65,14 @@ class DietView(APIView):
     def post(self, request):
         serializer = serializers.DietSerializer(data=request.data)
         if serializer.is_valid():
-            diet = serializer.save()
+            diet = serializer.save(user=request.user)
+            selected_diets = request.data.get("selected_diet")
+            for selected_diet_pk in selected_diets:
+                try:
+                    selected_diet = SelectedDiet.objects.get(pk=selected_diet_pk)
+                except SelectedDiet.DoesNotExist:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+                diet.selected_diet.add(selected_diet)
             return Response(
                 {"diet": serializers.DietSerializer(diet).data},
                 status=status.HTTP_201_CREATED,
@@ -86,7 +93,7 @@ class PutDiet(APIView):
     # 한줄 평가 입력
     def put(self, request, pk):
         diet = DietList.objects.get(pk=pk)
-        serializer = serializers.DietReviewSerializer(
+        serializer = serializers.DietSerializer(
             diet,
             data=request.data,
             partial=True,
@@ -94,7 +101,7 @@ class PutDiet(APIView):
         if serializer.is_valid():
             updated_diet = serializer.save()
             return Response(
-                serializers.DietReviewSerializer(updated_diet).data,
+                serializers.DietSerializer(updated_diet).data,
                 status=status.HTTP_202_ACCEPTED,
             )
         else:
