@@ -30,11 +30,11 @@ class UserInfo(APIView):
         )
         if serializer.is_valid():
             user = User.objects.create_user(
-                username = request.data["username"],
-                password = request.data["password"],
-                height = request.data["height"],
-                weight = request.data["weight"],
-                activity = request.data["activity"],
+                username=request.data["username"],
+                password=request.data["password"],
+                height=request.data["height"],
+                weight=request.data["weight"],
+                activity=request.data["activity"],
             )
             updated_serializer = serializers.UserPutSerializer(user)
             return Response(updated_serializer.data, status=status.HTTP_200_OK)
@@ -49,14 +49,14 @@ class Signup(APIView):
         # 회원가입
         if serializer.is_valid():
             user = User.objects.create_user(
-                username = request.data["username"],
-                password = request.data["password"],
-                email = request.data["email"],
-                age = request.data["age"],
-                gender = request.data["gender"],
-                height = request.data["height"],
-                weight = request.data["weight"],
-                activity = request.data["activity"],
+                username=request.data["username"],
+                password=request.data["password"],
+                email=request.data["email"],
+                age=request.data["age"],
+                gender=request.data["gender"],
+                height=request.data["height"],
+                weight=request.data["weight"],
+                activity=request.data["activity"],
             )
             # recommended_calorie = serializer.get_recommended_calorie(user)
             token = TokenObtainPairSerializer.get_token(user)
@@ -77,22 +77,26 @@ class Signup(APIView):
 class UsernameDuplicate(APIView):
     def post(self, request):
         if User.objects.filter(username=request.data["username"]).exists():
-            return Response({"error":"이미 사용중인 닉네임입니다."}, status=status.HTTP_400_BAD_REQUEST)
-        else: Response(status=status.HTTP_200_OK)
+            return Response(
+                {"error": "이미 사용중인 닉네임입니다."}, status=status.HTTP_400_BAD_REQUEST
+            )
+        else:
+            Response(status=status.HTTP_200_OK)
 
 
 class EmailDuplicate(APIView):
     def post(self, request):
         if User.objects.filter(email=request.data["email"]).exists():
-            return Response({"error":"이미 존재하는 이메일입니다."}, status=status.HTTP_400_BAD_REQUEST)
-        else: Response(status=status.HTTP_200_OK)
-
+            return Response(
+                {"error": "이미 존재하는 이메일입니다."}, status=status.HTTP_400_BAD_REQUEST
+            )
+        else:
+            Response(status=status.HTTP_200_OK)
 
 
 # 로그인
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
-
 
 
 # 로그아웃

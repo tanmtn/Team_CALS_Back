@@ -5,18 +5,21 @@ from .models import DietList, SelectedDiet
 from . import serializers
 from users.serializers import RecommendedCalorieMixin
 
+
 class SelectedDietSerializer(serializers.ModelSerializer):
     class Meta:
         model = SelectedDiet
         fields = (
             "food_name",
             "food_calorie",
+            "food_gram",
         )
 
 
 class DietSerializer(serializers.ModelSerializer, RecommendedCalorieMixin):
     daily_star_rating = serializers.SerializerMethodField()
     daily_calorie_sum = serializers.SerializerMethodField()
+    selected_diet = SelectedDietSerializer(many=True)
 
     class Meta:
         model = DietList
@@ -33,12 +36,14 @@ class DietSerializer(serializers.ModelSerializer, RecommendedCalorieMixin):
         )
 
     def get_daily_calorie_sum(self, diets):
-        total_rating = DietList.objects.filter(created_date = diets.created_date, user = diets.user).aggregate(Sum("meal_calorie"))
-        daily_calorie = total_rating['meal_calorie__sum']
+        total_rating = DietList.objects.filter(
+            created_date=diets.created_date, user=diets.user
+        ).aggregate(Sum("meal_calorie"))
+        daily_calorie = total_rating["meal_calorie__sum"]
         if daily_calorie is None:
             daily_calorie = 0
         return daily_calorie
-    
+
     def get_daily_star_rating(self, diets):
         daily_total_calorie = self.get_daily_calorie_sum(diets)
         meal_calorie = diets.meal_calorie
@@ -52,21 +57,3 @@ class DietSerializer(serializers.ModelSerializer, RecommendedCalorieMixin):
         calorie_difference = total_calorie - recommended_calorie
         rating = 5.0 - floor(calorie_difference / 100) * 0.5
         return max(0.0, rating)
-
-
-
-# class DietReviewSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = DietList
-#         fields = (
-#             "daily_review",
-#             "created_date",
-#             "created_time",
-#             "updated_at",
-#         )
-
-
-# class SelectedDietSerializer(serializers.ModelSerializer, CalculationMixin):
-#     class Meta:
-#         model = SelectedDiet
-#         fields = "__all__"

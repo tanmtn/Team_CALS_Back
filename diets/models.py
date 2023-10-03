@@ -18,18 +18,28 @@ class DietList(CommonModel):
         max_length=30,
         choices=MealCategoryChoices.choices,
     )
-    selected_diet = models.ManyToManyField("diets.SelectedDiet", related_name="diets",)
     meal_calorie = models.PositiveIntegerField()  # 식사당 총 칼로리
     daily_review = models.TextField(
         null=True,
         blank=True,
-    )   # 한줄평
+    )  # 한줄평
     user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
         related_name="diets",
     )
+    selected_diet = models.ManyToManyField(
+        "SelectedDiet",
+        related_name="diets",
+        null=True,
+        blank=True,
+    )
+
 
 class SelectedDiet(CommonModel):
     food_name = models.CharField(max_length=250)
     food_calorie = models.PositiveIntegerField()
+    food_gram = models.PositiveIntegerField()
+
+    def __str__(self) -> str:
+        return self.food_name
