@@ -14,7 +14,7 @@ class DietList(CommonModel):
         DRINK = ("drink", "음료")
 
     # 식사 종류(아/점/저/간/야/음)
-    meal_category = models.CharField(
+    meal_category = models.PositiveIntegerField(
         max_length=30,
         choices=MealCategoryChoices.choices,
     )
