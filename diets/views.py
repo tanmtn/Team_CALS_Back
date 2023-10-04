@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from datetime import datetime
 from . import serializers
 from .models import DietList, SelectedDiet
 
@@ -16,22 +17,28 @@ class DietView(APIView):
     def post(self, request):
         serializer = serializers.DietSerializer(data=request.data)
         if serializer.is_valid():
-            diet = serializer.save(user=request.user)
-            selected_diets_data = request.data.get("selected_diet", [])
-            for selected_diet_data in selected_diets_data:
-                selected_serializer = serializers.SelectedDietSerializer(data=selected_diet_data)
-                if selected_serializer.is_valid():
-                    selectedDiet, created = SelectedDiet.objects.get_or_create(
-                        food_name=selected_diet_data["food_name"],
-                        defaults={
-                            "food_calorie": selected_diet_data["food_calorie"],
-                            "food_gram": selected_diet_data["food_gram"],
-                        },
-                    )
-                    diet.selected_diet.add(selectedDiet.id)  # manytomany field는 add/remove
+            if DietList.objects.filter(user=request.user, created_date=datetime.now(), meal_category=request.data["meal_category"]).exists():
+                return Response({'errors':"님 오늘 이미 그거 먹었음"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                if not request.data["selected_diet"]:
+                    return Response({"errors": "음식을 선택하지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return Response(selected_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    diet = serializer.save(user=request.user)
+                    selected_diets_data = request.data.get("selected_diet", [])
+                    for selected_diet_data in selected_diets_data:
+                        selected_serializer = serializers.SelectedDietSerializer(data=selected_diet_data)
+                        if selected_serializer.is_valid():
+                            selectedDiet, created = SelectedDiet.objects.get_or_create(
+                                food_name=selected_diet_data["food_name"],
+                                defaults={
+                                    "food_calorie": selected_diet_data["food_calorie"],
+                                    "food_gram": selected_diet_data["food_gram"],
+                                },
+                            )
+                            diet.selected_diet.add(selectedDiet.id)  # manytomany field는 add/remove
+                        else:
+                            return Response(selected_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
