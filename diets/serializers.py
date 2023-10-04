@@ -19,13 +19,13 @@ class SelectedDietSerializer(serializers.ModelSerializer):
 class DietSerializer(serializers.ModelSerializer, RecommendedCalorieMixin):
     daily_star_rating = serializers.SerializerMethodField()
     daily_calorie_sum = serializers.SerializerMethodField()
-    selected_diet = SelectedDietSerializer(many=True)
+    selected_diet = serializers.SelectedDietSerializer(read_only=True , many=True)
 
     class Meta:
         model = DietList
         fields = (
             "meal_category",
-            "meal_calorie",
+            "meal_calorie", 
             "daily_review",
             "selected_diet",
             "created_date",
