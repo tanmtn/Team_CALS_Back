@@ -14,11 +14,11 @@ class DietList(CommonModel):
         DRINK = ("drink", "음료")
 
     # 식사 종류(아/점/저/간/야/음)
-    meal_category = models.FloatField(
+    meal_category = models.CharField(
         max_length=30,
         choices=MealCategoryChoices.choices,
     )
-    meal_calorie = models.PositiveIntegerField()  # 식사당 총 칼로리
+    meal_calorie = models.FloatField()  # 식사당 총 칼로리
     daily_review = models.TextField(
         null=True,
         blank=True,
