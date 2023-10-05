@@ -11,6 +11,7 @@ class SelectedDietSerializer(serializers.ModelSerializer):
         model = SelectedDiet
         fields = (
             "food_name",
+            "food_quantity",
             "food_calorie",
             "food_gram",
         )

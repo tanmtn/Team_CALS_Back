@@ -39,6 +39,7 @@ class DietList(CommonModel):
 class SelectedDiet(CommonModel):
     food_name = models.CharField(max_length=250)
     food_calorie = models.FloatField()
+    food_quantity = models.PositiveIntegerField()
     food_gram = models.PositiveIntegerField()
 
     def __str__(self) -> str:

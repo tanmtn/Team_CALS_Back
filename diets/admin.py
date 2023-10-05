@@ -26,5 +26,6 @@ class SelectedDietAdmin(admin.ModelAdmin):
         "created_time",
         "food_name",
         "food_calorie",
+        "food_quantity",
         "food_gram",
     )
