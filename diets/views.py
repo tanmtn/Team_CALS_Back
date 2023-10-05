@@ -20,9 +20,7 @@ class DietView(APIView):
             if DietList.objects.filter(user=request.user, created_date=datetime.now(), meal_category=request.data["meal_category"]).exists():
                 return Response({'errors':"님 오늘 이미 그거 먹었음"}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                if not request.data["selected_diet"]:
-                    return Response({"errors": "음식을 선택하지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
-                else:
+                if request.data["selected_diet"]:
                     diet = serializer.save(user=request.user)
                     selected_diets_data = request.data.get("selected_diet", [])
                     for selected_diet_data in selected_diets_data:
@@ -39,6 +37,8 @@ class DietView(APIView):
                         else:
                             return Response(selected_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
+                else:
+                    return Response({"errors": "음식을 선택하지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
